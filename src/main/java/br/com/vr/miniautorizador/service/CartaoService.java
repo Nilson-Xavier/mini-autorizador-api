@@ -16,11 +16,9 @@ public class CartaoService {
     private CartaoRepository repository;
 
     public Cartao criarCartao(String numero, String senha) {
-        if (repository.existsById(numero)) {
-            throw new CartaoExistenteException();
-        }
-        Cartao cartao = new Cartao(numero, senha);
-        return repository.save(cartao);
+        return (Cartao) repository.findById(numero)
+                .map(existing -> { throw new CartaoExistenteException(); })
+                .orElseGet(() -> repository.save(new Cartao(numero, senha)));
     }
 
     public BigDecimal obterSaldo(String numero) {

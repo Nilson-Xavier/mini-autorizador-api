@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/cartoes")
@@ -19,12 +21,15 @@ public class CartaoController {
     private CartaoService service;
 
     @PostMapping
-    public ResponseEntity<Cartao> criar(@RequestBody Cartao cartao) {
+    public ResponseEntity<?> criar(@RequestBody Cartao cartao) {
         try {
             Cartao novo = service.criarCartao(cartao.getNumeroCartao(), cartao.getSenha());
             return ResponseEntity.status(HttpStatus.CREATED).body(novo);
         } catch (CartaoExistenteException e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(cartao);
+            Map<String, String> responseBody = new HashMap<>();
+            responseBody.put("numeroCartao", cartao.getNumeroCartao());
+            responseBody.put("senha", cartao.getSenha());
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(responseBody);
         }
     }
 

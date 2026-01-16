@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Entity
 @Table(name = "cartao")
@@ -47,16 +48,19 @@ public class Cartao {
     }
 
     public void validarSenha(String senhaInformada) {
-        if (!this.senha.equals(senhaInformada)) {
-            throw new SenhaInvalidaException();
-        }
+        Optional.ofNullable(senhaInformada)
+                .filter(senha -> !this.senha.equals(senha))
+                .ifPresent(s -> { throw new SenhaInvalidaException(); });
     }
 
     public void debitar(BigDecimal valor) {
-        if (saldo.compareTo(valor) < 0) {
-            throw new SaldoInsuficienteException();
-        }
-        saldo = saldo.subtract(valor);
+        Optional.ofNullable(valor)
+                .filter(v -> v.compareTo(BigDecimal.ZERO) > 0)
+                .filter(v -> this.saldo.compareTo(v) >= 0)
+                .ifPresentOrElse(
+                        v -> this.saldo = this.saldo.subtract(v),
+                        () -> { throw new SaldoInsuficienteException(); }
+                );
     }
 }
 
