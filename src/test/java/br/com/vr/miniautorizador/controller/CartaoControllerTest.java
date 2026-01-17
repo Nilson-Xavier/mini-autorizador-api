@@ -28,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(CartaoController.class)
 @Import(SecurityConfig.class) // Importa sua configuração de Basic Auth
-@AutoConfigureMockMvc(addFilters = true)
 class CartaoControllerTest {
 
     @Autowired
