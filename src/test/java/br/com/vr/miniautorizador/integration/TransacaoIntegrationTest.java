@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test") // Usa application-test.properties para apontar para o MySQL de teste
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CartaoIntegrationTest {
+class TransacaoIntegrationTest {
 
     @Autowired
     private CartaoRepository repository;
@@ -32,7 +32,7 @@ class CartaoIntegrationTest {
     @Transactional
     @WithMockUser(username = "user", password = "password")
     @DisplayName("Deve criar cartão e realizar transação com sucesso")
-    void deveCriarCartaoEConsultarSaldo() throws Exception {
+    void deveRealizarTransacao() throws Exception {
         String numeroCartao = "123456";
 
         try {
@@ -41,10 +41,11 @@ class CartaoIntegrationTest {
                             .content("{\"numeroCartao\": \"" + numeroCartao + "\", \"senha\": \"1234\"}"))
                     .andExpect(status().isCreated());
 
-            mockMvc.perform(get("/cartoes/" + numeroCartao)
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().string("500.00"));
+            mockMvc.perform(post("/transacoes")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"numeroCartao\": \"" + numeroCartao + "\", \"senhaCartao\": \"1234\", \"valor\": 400.00}"))
+                    .andExpect(status().isCreated())
+                    .andExpect(content().string("OK"));
         } finally {
             repository.deleteBynumeroCartao(numeroCartao);
         }
@@ -53,8 +54,8 @@ class CartaoIntegrationTest {
     @Test
     @Transactional
     @WithMockUser(username = "user", password = "password")
-    @DisplayName("Deve criar cartão e gerar erro de cartao inexistente")
-    void deveCriarCartaoEerroCartaoInexistente() throws Exception {
+    @DisplayName("Deve criar cartão e realizar transação com sucesso")
+    void deveTentarTransacaoComErroSenhaInvalida() throws Exception {
         String numeroCartao = "123456";
 
         try {
@@ -63,33 +64,57 @@ class CartaoIntegrationTest {
                             .content("{\"numeroCartao\": \"" + numeroCartao + "\", \"senha\": \"1234\"}"))
                     .andExpect(status().isCreated());
 
-            mockMvc.perform(get("/cartoes/" + numeroCartao + "7")
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isNotFound())
-                    .andExpect(content().string(""));
-        } finally {
-            repository.deleteBynumeroCartao(numeroCartao);
-        }
-    }
-
-    @Test
-    @Transactional
-    @WithMockUser(username = "user", password = "password")
-    @DisplayName("Deve criar cartão e gerar erro de cartao inexistente")
-    void deveCriarCartaoEerroCartaoExistente() throws Exception {
-        String numeroCartao = "123456";
-
-        try {
-            mockMvc.perform(post("/cartoes")
+            mockMvc.perform(post("/transacoes")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content("{\"numeroCartao\": \"" + numeroCartao + "\", \"senha\": \"1234\"}"))
-                    .andExpect(status().isCreated());
-
-            mockMvc.perform(post("/cartoes")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content("{\"numeroCartao\": \"" + numeroCartao + "\", \"senha\": \"1234\"}"))
+                            .content("{\"numeroCartao\": \"" + numeroCartao + "\", \"senhaCartao\": \"12345\", \"valor\": 400.00}"))
                     .andExpect(status().isUnprocessableEntity())
-                    .andExpect(content().string("{\"numeroCartao\":\"" + numeroCartao + "\",\"senha\":\"1234\"}"));
+                    .andExpect(content().string("SENHA_INVALIDA"));
+        } finally {
+            repository.deleteBynumeroCartao(numeroCartao);
+        }
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(username = "user", password = "password")
+    @DisplayName("Deve criar cartão e realizar transação com sucesso")
+    void deveTentarTransacaoComErroCartaoInvalido() throws Exception {
+        String numeroCartao = "123456";
+
+        try {
+            mockMvc.perform(post("/cartoes")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"numeroCartao\": \"" + numeroCartao + "\", \"senha\": \"1234\"}"))
+                    .andExpect(status().isCreated());
+
+            mockMvc.perform(post("/transacoes")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"numeroCartao\": \"" + numeroCartao + "7\", \"senhaCartao\": \"1234\", \"valor\": 400.00}"))
+                    .andExpect(status().isUnprocessableEntity())
+                    .andExpect(content().string("CARTAO_INEXISTENTE"));
+        } finally {
+            repository.deleteBynumeroCartao(numeroCartao);
+        }
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(username = "user", password = "password")
+    @DisplayName("Deve criar cartão e realizar transação com sucesso")
+    void deveTentarTransacaoComErroSaldoInsuficiente() throws Exception {
+        String numeroCartao = "123456";
+
+        try {
+            mockMvc.perform(post("/cartoes")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"numeroCartao\": \"" + numeroCartao + "\", \"senha\": \"1234\"}"))
+                    .andExpect(status().isCreated());
+
+            mockMvc.perform(post("/transacoes")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"numeroCartao\": \"" + numeroCartao + "\", \"senhaCartao\": \"1234\", \"valor\": 600.00}"))
+                    .andExpect(status().isUnprocessableEntity())
+                    .andExpect(content().string("SALDO_INSUFICIENTE"));
         } finally {
             repository.deleteBynumeroCartao(numeroCartao);
         }
