@@ -1,11 +1,11 @@
 package br.com.vr.miniautorizador.service;
 
 import br.com.vr.miniautorizador.entity.Cartao;
-import br.com.vr.miniautorizador.repository.CartaoRepository;
 import br.com.vr.miniautorizador.exception.CartaoInexistenteException;
-import org.springframework.transaction.annotation.Transactional;
+import br.com.vr.miniautorizador.repository.CartaoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 

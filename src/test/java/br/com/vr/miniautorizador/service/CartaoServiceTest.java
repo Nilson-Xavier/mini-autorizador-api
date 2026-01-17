@@ -4,7 +4,6 @@ import br.com.vr.miniautorizador.entity.Cartao;
 import br.com.vr.miniautorizador.exception.CartaoExistenteException;
 import br.com.vr.miniautorizador.exception.CartaoInexistenteException;
 import br.com.vr.miniautorizador.repository.CartaoRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

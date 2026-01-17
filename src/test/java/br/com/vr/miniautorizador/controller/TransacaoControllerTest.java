@@ -1,18 +1,13 @@
 package br.com.vr.miniautorizador.controller;
 
 import br.com.vr.miniautorizador.config.SecurityConfig;
-import br.com.vr.miniautorizador.entity.Cartao;
-import br.com.vr.miniautorizador.exception.CartaoExistenteException;
 import br.com.vr.miniautorizador.exception.CartaoInexistenteException;
 import br.com.vr.miniautorizador.exception.SaldoInsuficienteException;
 import br.com.vr.miniautorizador.exception.SenhaInvalidaException;
-import br.com.vr.miniautorizador.model.TransacaoRequest;
-import br.com.vr.miniautorizador.service.CartaoService;
 import br.com.vr.miniautorizador.service.TransacaoService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -24,9 +19,9 @@ import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TransacaoController.class)
 @Import(SecurityConfig.class) // Importa sua configuração de Basic Auth

@@ -1,7 +1,6 @@
 package br.com.vr.miniautorizador.service;
 
 import br.com.vr.miniautorizador.entity.Cartao;
-import br.com.vr.miniautorizador.exception.CartaoExistenteException;
 import br.com.vr.miniautorizador.exception.CartaoInexistenteException;
 import br.com.vr.miniautorizador.exception.SaldoInsuficienteException;
 import br.com.vr.miniautorizador.exception.SenhaInvalidaException;
@@ -18,9 +17,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
