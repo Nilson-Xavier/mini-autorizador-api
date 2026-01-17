@@ -12,5 +12,7 @@ public interface CartaoRepository extends JpaRepository<Cartao, String> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select c from Cartao c where c.numeroCartao = :numero")
     Optional<Cartao> findByNumeroForUpdate(String numero);
+
+    void deleteBynumeroCartao(String numeroCartao);
 }
 
