@@ -56,7 +56,7 @@ public class TransacaoConcorrenteIntegrationTest {
                                     .content("{\"numeroCartao\": \"" + numeroCartao + "\", \"senha\": \"1234\"}"))
                             .andExpect(status().isCreated());
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("Failed to create cartao", e);
                 }
                 return null;
             });
