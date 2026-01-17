@@ -3,8 +3,9 @@ package br.com.vr.miniautorizador.service;
 import br.com.vr.miniautorizador.entity.Cartao;
 import br.com.vr.miniautorizador.repository.CartaoRepository;
 import br.com.vr.miniautorizador.exception.CartaoInexistenteException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 
 import java.math.BigDecimal;
 
@@ -17,7 +18,7 @@ public class TransacaoService {
         this.repository = repository;
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void autorizar(String numero, String senha, BigDecimal valor) {
         Cartao cartao = repository.findByNumeroForUpdate(numero)
                 .orElseThrow(CartaoInexistenteException::new);
