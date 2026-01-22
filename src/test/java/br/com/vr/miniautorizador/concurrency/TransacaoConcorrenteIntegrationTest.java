@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test") // Usa application-test.properties para apontar para o MySQL de teste
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TransacaoConcorrenteIntegrationTest {
+class TransacaoConcorrenteIntegrationTest {
 
     @Autowired
     private CartaoRepository repository;

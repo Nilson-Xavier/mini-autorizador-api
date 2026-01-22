@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CartaoServiceTest {
+class CartaoServiceTest {
     @Mock
     private CartaoRepository repository;
 
